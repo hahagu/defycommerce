@@ -2,7 +2,6 @@
   "name": "@defycommerce/frontend",
   "version": "1.0.0",
   "description": "defycommerce Nuxt Frontend",
-  "private": true,
   "type": "module",
   "scripts": {
     "build": "nuxt build",
