@@ -1,0 +1,45 @@
+services:
+  database:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-postgres}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    ports:
+      - ${POSTGRES_PORT:-5432}:5432
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7
+    ports:
+      - ${REDIS_PORT:-6379}:6379
+    volumes:
+      - ./data/redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # app:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   environment:
+  #     JWT_SECRET: ${JWT_SECRET:-secret}
+  #     COOKIE_SECRET: ${COOKIE_SECRET:-secret}
+  #     REDIS_URL: redis://redis:6379
+  #     DATABASE_URL: postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@database:5432/${POSTGRES_DB:-postgres}
+  #   ports:
+  #     - ${APP_PORT:-3000}:3000
+  #   volumes:
+  #     - .:/app
+  #   depends_on:
+  #     - database
+  #     - redis
