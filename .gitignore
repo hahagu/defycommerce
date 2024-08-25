@@ -176,3 +176,6 @@ dist
 
 # Data
 /data
+
+# Logs
+/logs

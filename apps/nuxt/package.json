@@ -1,5 +1,7 @@
 {
-  "name": "nuxt-app",
+  "name": "@defycommerce/frontend",
+  "version": "1.0.0",
+  "description": "defycommerce Nuxt Frontend",
   "private": true,
   "type": "module",
   "scripts": {
@@ -7,7 +9,8 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "start": "cross-env node ./output/server/index.mjs"
   },
   "dependencies": {
     "nuxt": "^3.13.0",
