@@ -1,6 +1,10 @@
+<script lang="ts" setup>
+const appConfig = useAppConfig();
+provideHeadlessUseId(() => useId());
+</script>
+
 <template>
-  <div>
-    <NuxtRouteAnnouncer />
-    <NuxtWelcome />
-  </div>
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
 </template>

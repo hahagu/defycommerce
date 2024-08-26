@@ -12,7 +12,19 @@
     "start": "cross-env node ./output/server/index.mjs"
   },
   "dependencies": {
+    "@nuxt/image": "^1.7.0",
+    "@nuxtjs/google-fonts": "^3.2.0",
+    "@nuxtjs/tailwindcss": "^6.12.1",
+    "@pinia/nuxt": "^0.5.4",
+    "@tailwindcss/forms": "^0.5.7",
+    "@tailwindcss/typography": "^0.5.14",
+    "@vee-validate/nuxt": "^4.13.2",
+    "@vueuse/core": "^11.0.3",
     "nuxt": "^3.13.0",
+    "nuxt-headlessui": "^1.2.0",
+    "nuxt-icon": "^1.0.0-beta.7",
+    "nuxt-medusa": "^0.5.0",
+    "tailwindcss-animate": "^1.0.7",
     "vue": "latest"
   }
 }
