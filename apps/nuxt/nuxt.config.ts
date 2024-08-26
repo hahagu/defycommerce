@@ -12,7 +12,7 @@ export default defineNuxtConfig({
     'nuxt-headlessui',
     '@nuxtjs/google-fonts',
     '@nuxt/image',
-    'nuxt-icon',
+    '@nuxt/icon',
     '@vee-validate/nuxt',
     '@pinia/nuxt',
   ],
