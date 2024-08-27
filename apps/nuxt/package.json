@@ -2,6 +2,8 @@
   "name": "@defycommerce/frontend",
   "version": "1.0.0",
   "description": "defycommerce Nuxt Frontend",
+  "author": "defy.works",
+  "license": "UNLICENSED",
   "type": "module",
   "scripts": {
     "build": "nuxt build",
@@ -12,6 +14,7 @@
     "start": "cross-env node ./output/server/index.mjs"
   },
   "dependencies": {
+    "@iconify-json/heroicons": "^1.1.24",
     "@nuxt/icon": "^1.4.10",
     "@nuxt/image": "^1.7.0",
     "@nuxtjs/google-fonts": "^3.2.0",
@@ -28,5 +31,6 @@
     "nuxt-medusa": "^0.5.0",
     "tailwindcss-animate": "^1.0.7",
     "vue": "latest"
-  }
+  },
+  "packageManager": "pnpm@9.3.0+sha512.ee7b93e0c2bd11409c6424f92b866f31d3ea1bef5fbe47d3c7500cdc3c9668833d2e55681ad66df5b640c61fa9dc25d546efa54d76d7f8bf54b13614ac293631"
 }

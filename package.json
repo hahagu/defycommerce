@@ -1,0 +1,18 @@
+{
+  "name": "defycommerce",
+  "version": "1.0.0",
+  "description": "defy.works e-commerce platform",
+  "author": "defy.works",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "lerna": "^8.1.8"
+  },
+  "scripts": {
+    "dev": "lerna run dev --stream",
+    "build": "lerna run build --stream",
+    "start": "lerna run start --stream",
+    "migrate": "lerna run migrate --stream",
+    "seed": "lerna run seed --stream"
+  },
+  "packageManager": "pnpm@9.3.0+sha512.ee7b93e0c2bd11409c6424f92b866f31d3ea1bef5fbe47d3c7500cdc3c9668833d2e55681ad66df5b640c61fa9dc25d546efa54d76d7f8bf54b13614ac293631"
+}
