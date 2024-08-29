@@ -5,6 +5,7 @@
 :root {
     --color-primary: 43, 36, 46;
     --color-primary-border: 23, 16, 26;
+    --color-primary-hover: 63, 56, 66;
 }
 
 @layer base {

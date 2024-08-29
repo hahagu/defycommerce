@@ -1,0 +1,16 @@
+FROM node:lts-alpine AS base
+
+RUN mkdir -p /usr/src/nuxt
+WORKDIR /usr/src/nuxt
+COPY . .
+
+RUN npm install -g pnpm
+
+RUN pnpm ci && pnpm cache clean --force
+RUN pnpm run build
+
+ENV NUXT_HOST=0.0.0.0
+ENV NUXT_PORT=3000
+
+EXPOSE 3000
+ENTRYPOINT ["node", ".output/server/index.mjs"]

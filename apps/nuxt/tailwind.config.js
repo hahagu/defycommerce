@@ -29,6 +29,7 @@ module.exports = {
       colors: {
         'primary': withOpacity('--color-primary'),
         'primary-border': withOpacity('--color-primary-border'),
+        'primary-hover': withOpacity('--color-primary-hover'),
       }
     },
   },

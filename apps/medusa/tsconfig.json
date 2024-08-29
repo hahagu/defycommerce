@@ -12,16 +12,14 @@
     "declaration": true,
     "sourceMap": false,
     "outDir": "./dist",
-    "rootDir": "./",
+    "rootDir": "./src",
     "baseUrl": ".",
     "jsx": "react-jsx",
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "checkJs": false
   },
-  "ts-node": {
-    "swc": true
-  },
+  "include": ["src/"],
   "exclude": [
     "**/__tests__",
     "**/__fixtures__",

@@ -1,5 +1,6 @@
 services:
   database:
+    profiles: [prod, dev, server]
     image: postgres:13
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-postgres}
@@ -16,6 +17,7 @@ services:
       retries: 5
 
   redis:
+    profiles: [prod, dev, server]
     image: redis:7
     ports:
       - ${REDIS_PORT:-6379}:6379
@@ -27,19 +29,46 @@ services:
       timeout: 5s
       retries: 5
 
-  # app:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #   environment:
-  #     JWT_SECRET: ${JWT_SECRET:-secret}
-  #     COOKIE_SECRET: ${COOKIE_SECRET:-secret}
-  #     REDIS_URL: redis://redis:6379
-  #     DATABASE_URL: postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@database:5432/${POSTGRES_DB:-postgres}
-  #   ports:
-  #     - ${APP_PORT:-3000}:3000
-  #   volumes:
-  #     - .:/app
-  #   depends_on:
-  #     - database
-  #     - redis
+  nuxt:
+    profiles: [prod]
+    build:
+      context: /apps/nuxt
+      dockerfile: Dockerfile.prod
+    env_file: /apps/nuxt/.env
+    volumes:
+      - /apps/nuxt:/app
+    ports:
+      - ${NUXT_PORT:-3000}:3000
+
+  nuxt-dev:
+    profiles: [dev]
+    build:
+      context: /apps/nuxt
+      dockerfile: Dockerfile.dev
+    env_file: /apps/nuxt/.env
+    volumes:
+      - /apps/nuxt:/app
+    ports:
+      - ${NUXT_PORT:-3000}:3000
+
+  medusa:
+    profiles: [prod]
+    build:
+      context: /apps/medusa
+      dockerfile: Dockerfile.prod
+    env_file: /apps/medusa/.env
+    volumes:
+      - /apps/medusa:/app
+    ports:
+      - ${MEDUSA_PORT:-9000}:9000
+
+  medusa-dev:
+    profiles: [dev]
+    build:
+      context: /apps/medusa
+      dockerfile: Dockerfile.dev
+    env_file: /apps/medusa/.env
+    volumes:
+      - /apps/medusa:/app
+    ports:
+      - ${MEDUSA_PORT:-9000}:9000

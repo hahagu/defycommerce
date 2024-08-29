@@ -28,4 +28,10 @@ export default defineNuxtConfig({
   medusa: {
     server: true
   },
+
+  vite: {
+    optimizeDeps: {
+      include: ["axios", "cross-env", "qs", "retry-axios", "uuid", "@lambdacurry/medusa-plugin-product-reviews-client"],
+    },
+  },
 })

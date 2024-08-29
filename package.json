@@ -1,18 +1,39 @@
 {
-  "name": "defycommerce",
-  "version": "1.0.0",
-  "description": "defy.works e-commerce platform",
-  "author": "defy.works",
-  "license": "UNLICENSED",
-  "devDependencies": {
-    "lerna": "^8.1.8"
-  },
-  "scripts": {
-    "dev": "lerna run dev --stream",
-    "build": "lerna run build --stream",
-    "start": "lerna run start --stream",
-    "migrate": "lerna run migrate --stream",
-    "seed": "lerna run seed --stream"
-  },
-  "packageManager": "pnpm@9.3.0+sha512.ee7b93e0c2bd11409c6424f92b866f31d3ea1bef5fbe47d3c7500cdc3c9668833d2e55681ad66df5b640c61fa9dc25d546efa54d76d7f8bf54b13614ac293631"
+    "private": true,
+    "workspaces": [
+        "packages/*",
+        "apps/*"
+    ],
+    "type": "module",
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "ESNext"
+    },
+    "scripts": {
+        "server:up": "docker compose --profile=server up",
+        "server:down": "docker compose --profile=server down",
+        "build": "lerna run build --stream",
+        "dev": "lerna run dev --scope='@defycommerce/*' --stream",
+        "start": "lerna run start --stream",
+        "build:medusa": "lerna run build --scope='@defycommerce/medusa' --stream",
+        "dev:medusa": "lerna run dev --scope='@defycommerce/medusa' --stream",
+        "start:medusa": "lerna run start --scope='@defycommerce/medusa' --stream",
+        "migrate": "lerna run migrate --scope='@defycommerce/medusa' --stream",
+        "seed": "lerna run seed --scope='@defycommerce/medusa' --stream",
+        "build:nuxt": "lerna run build --scope='@defycommerce/nuxt' --stream",
+        "dev:nuxt": "lerna run dev --scope='@defycommerce/nuxt' --stream",
+        "start:nuxt": "lerna run start --scope='@defycommerce/nuxt' --stream",
+        "clean": "tsx ./clean-node.ts && tsx ./clean-build.ts",
+        "clean:node": "tsx ./clean-node.ts",
+        "clean:build": "tsx ./clean-build.ts"
+    },
+    "devDependencies": {
+        "@types/node": "^22.5.1",
+        "fkill": "^9.0.0",
+        "lerna": "^4.0.0",
+        "rimraf": "^6.0.1",
+        "tsx": "^4.19.0",
+        "turbo": "^2.1.0"
+    },
+    "packageManager": "yarn@4.4.1"
 }
