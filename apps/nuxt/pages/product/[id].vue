@@ -32,6 +32,8 @@ const productPrice = computed(() => {
   return 0;
 });
 
+const selectedValues = ref<Record<string, string>>({});
+
 const uniqueOptions = computed(() => {
   const options = product.options;
 
@@ -44,10 +46,11 @@ const uniqueOptions = computed(() => {
     const values = option.values.filter((value: ProductOptionValue, index: number, self: ProductOptionValue[]) => self.findIndex((v) => v.value === value.value) === index);
     const firstAvailableValueIndex = values.findIndex(v => getProductAvailable(v));
 
+    selectedValues.value[option.id] = values[firstAvailableValueIndex].id;
+
     return {
       ...option,
       values,
-      selectedValue: ref(),
       initialValue: values[firstAvailableValueIndex].id,
     };
   });
@@ -55,10 +58,14 @@ const uniqueOptions = computed(() => {
   return uniqueOptions;
 });
 
+
 const productRating = computed(() => {
-  // const total = reviews.reduce((acc, review) => acc + review.rating, 0);
-  // return total / reviews.length;
-  return 2.5;
+  if (reviews.length === 0) {
+    return -1;
+  }
+
+  const total = reviews.reduce((acc, review) => acc + review.rating, 0);
+  return total / reviews.length;
 });
 
 const getProductAvailable = (optionValue: ProductOptionValue): boolean => {
@@ -132,11 +139,11 @@ const getProductAvailable = (optionValue: ProductOptionValue): boolean => {
             <div class="mt-4">
               <h2 class="sr-only">Reviews</h2>
               <div class="flex items-center">
-                <p class="text-sm text-neutral-700">
+                <p class="text-sm text-neutral-700 mr-1" v-if="productRating !== -1">
                   {{ productRating }}
                   <span class="sr-only"> out of 5 stars</span>
                 </p>
-                <div class="ml-1 flex items-center -mt-1">
+                <div class="flex items-center -mt-1">
                   <Icon
                     name="heroicons:star-16-solid"
                     v-for="rating in [0, 1, 2, 3, 4]"
@@ -157,8 +164,9 @@ const getProductAvailable = (optionValue: ProductOptionValue): boolean => {
                   <a
                     href="#"
                     class="text-sm font-medium text-primary hover:text-primary-hover"
-                    >See all {{ reviews.length }} reviews</a
                   >
+                    {{ productRating === -1 ? 'No reviews yet' : `See all ${reviews.length} reviews`  }}
+                  </a>
                 </div>
               </div>
             </div>
@@ -206,7 +214,7 @@ const getProductAvailable = (optionValue: ProductOptionValue): boolean => {
                 </div>
 
                 <fieldset :aria-label="'Choose a ' + option.title" class="mt-2">
-                  <RadioGroup :defaultValue="option.initialValue" class="grid grid-cols-3 gap-3 sm:grid-cols-6">
+                  <RadioGroup v-model="selectedValues[option.id]" :defaultValue="option.initialValue" class="grid grid-cols-3 gap-3 sm:grid-cols-5">
                     <RadioGroupOption
                       as="template"
                       v-for="optionValue in option.values"
