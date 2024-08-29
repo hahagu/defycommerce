@@ -6,8 +6,13 @@ export default defineNuxtConfig({
     enabled: true
   },
 
+  runtimeConfig: {
+    public: {
+      medusaUrl: process.env.MEDUSA_URL || 'http://localhost:9000',
+    }
+  },
+
   modules: [
-    'nuxt-medusa',
     '@nuxtjs/tailwindcss',
     'nuxt-headlessui',
     '@nuxtjs/google-fonts',
@@ -23,15 +28,5 @@ export default defineNuxtConfig({
 
   headlessui: {
     prefix: ''
-  },
-
-  medusa: {
-    server: true
-  },
-
-  vite: {
-    optimizeDeps: {
-      include: ["axios", "cross-env", "qs", "retry-axios", "uuid", "@lambdacurry/medusa-plugin-product-reviews-client"],
-    },
-  },
+  }
 })

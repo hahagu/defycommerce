@@ -1,19 +1,11 @@
 <script lang="ts" setup>
+import type { ProductOptionValue } from '@medusajs/medusa/dist/models';
 const route = useRoute();
 const productId = ref(route.params.id as string);
 
 const client = useMedusaClient();
 const { product } = await client.products.retrieve(productId.value);
-// const { reviews } = await client.productReviews.list({ product_id: productId.value });
-
-const referenceVariantValue = product.variants[0];
-type PricedVariant = typeof referenceVariantValue;
-
-const referenceOption = product.options?.[0];
-type ProductOption = typeof referenceOption;
-
-const referenceOptionValue = referenceOption?.values[0];
-type ProductOptionValue = typeof referenceOptionValue;
+const { reviews } = await client.productReviews.list({ product_id: productId.value });
 
 const breadcrumbs = computed(() => {
   return [
@@ -47,13 +39,16 @@ const uniqueOptions = computed(() => {
     return [];
   }
 
-  const uniqueOptions = options.map((option: ProductOption) => {
+  const uniqueOptions = options.map((option) => {
 
-    const values = option.values.filter((value, index, self) => self.findIndex((v) => v.value === value.value) === index);
+    const values = option.values.filter((value: ProductOptionValue, index: number, self: ProductOptionValue[]) => self.findIndex((v) => v.value === value.value) === index);
+    const firstAvailableValueIndex = values.findIndex(v => getProductAvailable(v));
 
     return {
       ...option,
       values,
+      selectedValue: ref(),
+      initialValue: values[firstAvailableValueIndex].id,
     };
   });
 
@@ -66,27 +61,21 @@ const productRating = computed(() => {
   return 2.5;
 });
 
-const getVariant = (variantId: string): PricedVariant | undefined => {
-  const variant = product.variants.find((v) => v.id === variantId);
-  return variant;
-};
-
 const getProductAvailable = (optionValue: ProductOptionValue): boolean => {
-  const variant = getVariant(optionValue.variant_id);
+  const variants = product.variants.filter((v) => v.options?.some((o) => o.value === optionValue.value));
 
-  if (!variant) {
+  // Variant not found
+  if (variants.length === 0) {
     return false;
   }
 
-  if (!variant.manage_inventory) {
+  if (variants.some(v => !v.manage_inventory)) {
     return true;
   }
 
-  if (!variant.inventory_quantity) {
-    return false;
-  }
+  const totalQuantity = variants.reduce((acc, variant) => acc + (variant.inventory_quantity ?? 0), 0);
 
-  return variant.inventory_quantity === 0;
+  return totalQuantity !== 0;
 };
 </script>
 
@@ -168,7 +157,7 @@ const getProductAvailable = (optionValue: ProductOptionValue): boolean => {
                   <a
                     href="#"
                     class="text-sm font-medium text-primary hover:text-primary-hover"
-                    >See all {{ product.reviewCount }} reviews</a
+                    >See all {{ reviews.length }} reviews</a
                   >
                 </div>
               </div>
@@ -216,19 +205,19 @@ const getProductAvailable = (optionValue: ProductOptionValue): boolean => {
                   </a>
                 </div>
 
-                <fieldset aria-label="Choose a size" class="mt-2">
-                  <RadioGroup class="grid grid-cols-3 gap-3 sm:grid-cols-6">
+                <fieldset :aria-label="'Choose a ' + option.title" class="mt-2">
+                  <RadioGroup :defaultValue="option.initialValue" class="grid grid-cols-3 gap-3 sm:grid-cols-6">
                     <RadioGroupOption
                       as="template"
                       v-for="optionValue in option.values"
                       :key="optionValue.id"
-                      :value="optionValue.value"
+                      :value="optionValue.id"
                       :disabled="!getProductAvailable(optionValue)"
                       v-slot="{ active, checked }"
                     >
                       <div
                         :class="[
-                          !getProductAvailable(optionValue)
+                          getProductAvailable(optionValue)
                             ? 'cursor-pointer focus:outline-none'
                             : 'cursor-not-allowed opacity-25',
                           active ? 'ring-2 ring-primary-border ring-offset-2' : '',
@@ -246,7 +235,7 @@ const getProductAvailable = (optionValue: ProductOptionValue): boolean => {
               </div>
 
               <button
-                type="submit"
+                type="button"
                 class="mt-8 flex w-full items-center justify-center rounded-md border border-transparent bg-primary px-8 py-3 text-base font-medium text-white hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-primary-border focus:ring-offset-2"
               >
                 Add to cart
@@ -262,49 +251,6 @@ const getProductAvailable = (optionValue: ProductOptionValue): boolean => {
                 v-html="product.description"
               />
             </div>
-
-            <div class="mt-8 border-t border-neutral-200 pt-8">
-              <h2 class="text-sm font-medium text-neutral-900">
-                Fabric &amp; Care
-              </h2>
-
-              <div class="prose prose-sm mt-4 text-neutral-500">
-                <ul role="list">
-                  <li v-for="item in product.metadata?.fabric_care" :key="item">
-                    {{ item }}
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            <!-- Policies -->
-            <!-- <section aria-labelledby="policies-heading" class="mt-10">
-              <h2 id="policies-heading" class="sr-only">Our Policies</h2>
-
-              <dl
-                class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2"
-              >
-                <div
-                  v-for="policy in policies"
-                  :key="policy.name"
-                  class="rounded-lg border border-neutral-200 bg-neutral-50 p-6 text-center"
-                >
-                  <dt>
-                    <component
-                      :is="policy.icon"
-                      class="mx-auto h-6 w-6 flex-shrink-0 text-neutral-400"
-                      aria-hidden="true"
-                    />
-                    <span class="mt-4 text-sm font-medium text-neutral-900">{{
-                      policy.name
-                    }}</span>
-                  </dt>
-                  <dd class="mt-1 text-sm text-neutral-500">
-                    {{ policy.description }}
-                  </dd>
-                </div>
-              </dl>
-            </section> -->
           </div>
         </div>
       </div>

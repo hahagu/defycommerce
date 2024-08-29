@@ -1,3 +1,9 @@
+<script setup>
+const cartStatusStore = useCartStatusStore();
+const { open } = storeToRefs(cartStatusStore);
+</script>
+
+
 <template>
   <TransitionRoot as="template" :show="open">
     <Dialog class="relative z-10" @close="open = false">
@@ -67,8 +73,3 @@
     </Dialog>
   </TransitionRoot>
 </template>
-
-<script setup>
-const cartStatusStore = useCartStatusStore();
-const { open } = storeToRefs(cartStatusStore);
-</script>
