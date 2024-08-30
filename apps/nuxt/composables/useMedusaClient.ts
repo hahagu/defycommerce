@@ -1,5 +1,4 @@
 import { Medusa } from '../utils/medusaClient';
-import { useRuntimeConfig, useNuxtApp } from '#imports';
 
 export const useMedusaClient = (): Medusa => {
   const nuxtApp = useNuxtApp();
@@ -16,5 +15,5 @@ export const useMedusaClient = (): Medusa => {
     });
   }
 
-  return nuxtApp._medusaClient as Medusa
+  return nuxtApp._medusaClient as Medusa;
 }

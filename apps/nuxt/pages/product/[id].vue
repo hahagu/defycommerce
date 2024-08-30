@@ -4,6 +4,7 @@ const route = useRoute();
 const productId = ref(route.params.id as string);
 
 const client = useMedusaClient();
+const cart = useCart();
 const { product } = await client.products.retrieve(productId.value);
 const { reviews } = await client.productReviews.list({ product_id: productId.value });
 
@@ -34,6 +35,19 @@ const productPrice = computed(() => {
 
 const selectedValues = ref<Record<string, string>>({});
 
+const getSelectedVariant = () => {
+  const selectedVariant = product.variants.find((variant) => {
+    if (!variant.options) {
+      return false;
+    }
+
+    const allSelectedOptions = Object.values(selectedValues.value);
+    return variant.options.every(o => allSelectedOptions.includes(o.value));
+  });
+
+  return selectedVariant;
+};
+
 const uniqueOptions = computed(() => {
   const options = product.options;
 
@@ -46,12 +60,11 @@ const uniqueOptions = computed(() => {
     const values = option.values.filter((value: ProductOptionValue, index: number, self: ProductOptionValue[]) => self.findIndex((v) => v.value === value.value) === index);
     const firstAvailableValueIndex = values.findIndex(v => getProductAvailable(v));
 
-    selectedValues.value[option.id] = values[firstAvailableValueIndex].id;
+    selectedValues.value[option.id] = values[firstAvailableValueIndex].value;
 
     return {
       ...option,
-      values,
-      initialValue: values[firstAvailableValueIndex].id,
+      values
     };
   });
 
@@ -84,6 +97,17 @@ const getProductAvailable = (optionValue: ProductOptionValue): boolean => {
 
   return totalQuantity !== 0;
 };
+
+const addToCart = async () => {
+  const selectedVariant = getSelectedVariant();
+  
+  if (!selectedVariant) {
+    alert('Please select a variant');
+    return;
+  }
+
+  await cart.addItem(selectedVariant, 1);
+}
 </script>
 
 <template>
@@ -214,12 +238,12 @@ const getProductAvailable = (optionValue: ProductOptionValue): boolean => {
                 </div>
 
                 <fieldset :aria-label="'Choose a ' + option.title" class="mt-2">
-                  <RadioGroup v-model="selectedValues[option.id]" :defaultValue="option.initialValue" class="grid grid-cols-3 gap-3 sm:grid-cols-5">
+                  <RadioGroup v-model="selectedValues[option.id]" class="grid grid-cols-3 gap-3 sm:grid-cols-5">
                     <RadioGroupOption
                       as="template"
                       v-for="optionValue in option.values"
                       :key="optionValue.id"
-                      :value="optionValue.id"
+                      :value="optionValue.value"
                       :disabled="!getProductAvailable(optionValue)"
                       v-slot="{ active, checked }"
                     >
@@ -245,6 +269,7 @@ const getProductAvailable = (optionValue: ProductOptionValue): boolean => {
               <button
                 type="button"
                 class="mt-8 flex w-full items-center justify-center rounded-md border border-transparent bg-primary px-8 py-3 text-base font-medium text-white hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-primary-border focus:ring-offset-2"
+                @click="addToCart"
               >
                 Add to cart
               </button>
