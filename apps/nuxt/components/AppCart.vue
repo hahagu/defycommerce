@@ -126,7 +126,7 @@ onMounted(async () => {
                   <div class="border-t border-neutral-200 px-4 py-6 sm:px-6">
                     <div class="flex justify-between text-base font-medium text-neutral-900">
                       <p>Subtotal</p>
-                      <p>{{ cart.cartItem.value.subtotal ? cart.cartItem.value.subtotal / 100 : 'Unavailable' }} {{ currencyString }}</p>
+                      <p>{{ cart.cartItem.value.subtotal ? cart.cartItem.value.subtotal / 100 : 'N/A' }} {{ currencyString }}</p>
                     </div>
                     <p class="mt-0.5 text-sm text-neutral-500">Shipping and taxes calculated at checkout.</p>
                     <div class="mt-6">
